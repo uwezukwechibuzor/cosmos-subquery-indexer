@@ -29,15 +29,13 @@ const project: CosmosProject = {
     chainId: "cosmoshub-4",
     /**
      * These endpoint(s) should be public non-pruned archive nodes
-     * Public nodes may be rate limited
-     * You can get your own endpoint from providers like:
-     * - https://www.allthatnode.com
-     * - https://cosmos-rpc.polkachu.com
+     * Using multiple reliable endpoints for redundancy
      */
     endpoint: [
       "https://cosmos-rpc.polkachu.com",
-      "https://rpc-cosmoshub.blockapsis.com",
-      "https://cosmos-rpc.quickapi.com",
+      "https://rpc.lavenderfive.com/cosmoshub",
+      "https://cosmoshub.rpc.stakin-nodes.com",
+      "https://rpc-cosmos-hub-01.stakeflow.io",
     ],
   },
   dataSources: [
