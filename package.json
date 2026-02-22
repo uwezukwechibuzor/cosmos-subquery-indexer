@@ -1,0 +1,35 @@
+{
+  "name": "cosmos-hub-subquery-indexer",
+  "version": "1.0.0",
+  "description": "Production-ready SubQuery indexer for Cosmos Hub",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "subql build",
+    "codegen": "subql codegen",
+    "start:docker": "docker compose pull && docker compose up --remove-orphans",
+    "dev": "subql codegen && subql build && docker compose pull && docker compose up --remove-orphans",
+    "prepack": "rm -rf dist && npm run build",
+    "test": "subql build && subql-node test"
+  },
+  "files": [
+    "dist",
+    "schema.graphql",
+    "project.ts"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@subql/cli": "latest",
+    "@subql/testing": "latest",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@subql/common-cosmos": "latest",
+    "@subql/types-cosmos": "latest",
+    "assert": "^2.1.0"
+  },
+  "exports": {
+    "chaintypes": "./src/chaintypes.ts"
+  }
+}

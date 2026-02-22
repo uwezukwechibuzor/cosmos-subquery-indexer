@@ -1,0 +1,229 @@
+# Cosmos Hub SubQuery Schema - Production Ready
+
+# ============================================
+# Account & Balances
+# ============================================
+
+type Account @entity {
+  id: ID! # address
+  firstSeenBlock: BigInt!
+  firstSeenTime: Date!
+  totalTransactionsSent: Int!
+  totalTransactionsReceived: Int!
+  delegations: [Delegation!] @derivedFrom(field: "delegator")
+  votes: [Vote!] @derivedFrom(field: "voter")
+  transfers: [Transfer!] @derivedFrom(field: "from")
+}
+
+# ============================================
+# Transfers
+# ============================================
+
+type Transfer @entity {
+  id: ID! # txHash-msgIndex-eventIndex
+  blockHeight: BigInt! @index
+  timestamp: Date!
+  txHash: String! @index
+  from: Account!
+  to: Account!
+  amount: String!
+  denom: String! @index
+  success: Boolean!
+}
+
+# ============================================
+# Staking - Delegations
+# ============================================
+
+type Validator @entity {
+  id: ID! # operator address
+  address: String! @index
+  moniker: String
+  website: String
+  details: String
+  commissionRate: String
+  maxCommissionRate: String
+  maxCommissionChangeRate: String
+  minSelfDelegation: String
+  status: ValidatorStatus!
+  jailed: Boolean!
+  tokens: String
+  delegatorShares: String
+  firstSeenBlock: BigInt!
+  firstSeenTime: Date!
+  delegations: [Delegation!] @derivedFrom(field: "validator")
+}
+
+enum ValidatorStatus {
+  BONDED
+  UNBONDING
+  UNBONDED
+}
+
+type Delegation @entity {
+  id: ID! # delegator-validator
+  delegator: Account!
+  validator: Validator!
+  shares: String!
+  amount: String
+  blockHeight: BigInt! @index
+  timestamp: Date!
+}
+
+type Undelegation @entity {
+  id: ID! # txHash-msgIndex
+  delegator: String! @index
+  validator: String! @index
+  amount: String!
+  denom: String!
+  completionTime: Date!
+  blockHeight: BigInt! @index
+  timestamp: Date!
+  txHash: String! @index
+}
+
+type Redelegation @entity {
+  id: ID! # txHash-msgIndex
+  delegator: String! @index
+  validatorSrc: String! @index
+  validatorDst: String! @index
+  amount: String!
+  denom: String!
+  completionTime: Date!
+  blockHeight: BigInt! @index
+  timestamp: Date!
+  txHash: String! @index
+}
+
+# ============================================
+# Governance
+# ============================================
+
+type Proposal @entity {
+  id: ID! # proposal ID
+  proposalId: String! @index
+  type: String!
+  title: String!
+  description: String
+  status: ProposalStatus! @index
+  submitTime: Date!
+  depositEndTime: Date
+  votingStartTime: Date
+  votingEndTime: Date
+  totalDeposit: String
+  proposer: String! @index
+  blockHeight: BigInt!
+  txHash: String! @index
+  votes: [Vote!] @derivedFrom(field: "proposal")
+  deposits: [Deposit!] @derivedFrom(field: "proposal")
+}
+
+enum ProposalStatus {
+  DEPOSIT_PERIOD
+  VOTING_PERIOD
+  PASSED
+  REJECTED
+  FAILED
+}
+
+type Vote @entity {
+  id: ID! # proposalId-voter
+  proposal: Proposal!
+  voter: Account!
+  option: VoteOption!
+  blockHeight: BigInt! @index
+  timestamp: Date!
+  txHash: String! @index
+}
+
+enum VoteOption {
+  YES
+  NO
+  NO_WITH_VETO
+  ABSTAIN
+}
+
+type Deposit @entity {
+  id: ID! # txHash-msgIndex
+  proposal: Proposal!
+  depositor: String! @index
+  amount: String!
+  denom: String!
+  blockHeight: BigInt! @index
+  timestamp: Date!
+  txHash: String! @index
+}
+
+# ============================================
+# Distribution - Rewards
+# ============================================
+
+type Reward @entity {
+  id: ID! # txHash-msgIndex-eventIndex
+  delegator: String! @index
+  validator: String! @index
+  amount: String!
+  denom: String!
+  blockHeight: BigInt! @index
+  timestamp: Date!
+  txHash: String! @index
+}
+
+type Commission @entity {
+  id: ID! # txHash-msgIndex-eventIndex
+  validator: String! @index
+  amount: String!
+  denom: String!
+  blockHeight: BigInt! @index
+  timestamp: Date!
+  txHash: String! @index
+}
+
+# ============================================
+# IBC Transfers
+# ============================================
+
+type IBCTransfer @entity {
+  id: ID! # txHash-msgIndex
+  blockHeight: BigInt! @index
+  timestamp: Date!
+  txHash: String! @index
+  sender: String! @index
+  receiver: String! @index
+  amount: String!
+  denom: String!
+  sourcePort: String!
+  sourceChannel: String! @index
+  destinationPort: String
+  destinationChannel: String
+  timeoutHeight: String
+  timeoutTimestamp: String
+  memo: String
+  success: Boolean!
+}
+
+# ============================================
+# Block Statistics
+# ============================================
+
+type DailyStatistic @entity {
+  id: ID! # date YYYY-MM-DD
+  date: Date! @index
+  totalTransactions: Int!
+  totalTransfers: Int!
+  totalDelegations: Int!
+  totalUndelegations: Int!
+  uniqueActiveAccounts: Int!
+  totalIBCTransfers: Int!
+  totalVolume: String
+  avgBlockTime: Float
+}
+
+type BlockInfo @entity {
+  id: ID! # block height
+  height: BigInt! @index
+  hash: String!
+  timestamp: Date! @index
+  transactionCount: Int!
+  proposer: String! @index
+}

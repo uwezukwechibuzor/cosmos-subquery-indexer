@@ -1,0 +1,96 @@
+# // Auto-generated , DO NOT EDIT
+specVersion: 1.0.0
+version: 1.0.0
+name: cosmos-hub-subquery-indexer
+description: >-
+  Production-ready SubQuery indexer for Cosmos Hub - tracks transfers, staking,
+  governance, IBC, and more
+runner:
+  node:
+    name: '@subql/node-cosmos'
+    version: '>=3.0.0'
+  query:
+    name: '@subql/query'
+    version: '*'
+schema:
+  file: ./schema.graphql
+network:
+  chainId: cosmoshub-4
+  endpoint:
+    - https://cosmos-rpc.polkachu.com
+    - https://rpc-cosmoshub.blockapsis.com
+    - https://cosmos-rpc.quickapi.com
+dataSources:
+  - kind: cosmos/Runtime
+    startBlock: 5200791
+    mapping:
+      file: ./dist/index.js
+      handlers:
+        - handler: handleBlock
+          kind: cosmos/BlockHandler
+        - handler: handleTransferMessage
+          kind: cosmos/MessageHandler
+          filter:
+            type: /cosmos.bank.v1beta1.MsgSend
+        - handler: handleTransferEvent
+          kind: cosmos/EventHandler
+          filter:
+            type: transfer
+            messageFilter:
+              type: /cosmos.bank.v1beta1.MsgSend
+        - handler: handleDelegateMessage
+          kind: cosmos/MessageHandler
+          filter:
+            type: /cosmos.staking.v1beta1.MsgDelegate
+        - handler: handleUndelegateMessage
+          kind: cosmos/MessageHandler
+          filter:
+            type: /cosmos.staking.v1beta1.MsgUndelegate
+        - handler: handleRedelegateMessage
+          kind: cosmos/MessageHandler
+          filter:
+            type: /cosmos.staking.v1beta1.MsgBeginRedelegate
+        - handler: handleDelegateEvent
+          kind: cosmos/EventHandler
+          filter:
+            type: delegate
+        - handler: handleWithdrawRewardsMessage
+          kind: cosmos/MessageHandler
+          filter:
+            type: /cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward
+        - handler: handleWithdrawCommissionMessage
+          kind: cosmos/MessageHandler
+          filter:
+            type: /cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission
+        - handler: handleRewardEvent
+          kind: cosmos/EventHandler
+          filter:
+            type: withdraw_rewards
+        - handler: handleCommissionEvent
+          kind: cosmos/EventHandler
+          filter:
+            type: withdraw_commission
+        - handler: handleSubmitProposalMessage
+          kind: cosmos/MessageHandler
+          filter:
+            type: /cosmos.gov.v1beta1.MsgSubmitProposal
+        - handler: handleVoteMessage
+          kind: cosmos/MessageHandler
+          filter:
+            type: /cosmos.gov.v1beta1.MsgVote
+        - handler: handleDepositMessage
+          kind: cosmos/MessageHandler
+          filter:
+            type: /cosmos.gov.v1beta1.MsgDeposit
+        - handler: handleProposalEvent
+          kind: cosmos/EventHandler
+          filter:
+            type: submit_proposal
+        - handler: handleIBCTransferMessage
+          kind: cosmos/MessageHandler
+          filter:
+            type: /ibc.applications.transfer.v1.MsgTransfer
+        - handler: handleIBCTransferEvent
+          kind: cosmos/EventHandler
+          filter:
+            type: ibc_transfer

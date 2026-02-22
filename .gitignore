@@ -1,0 +1,16 @@
+# Node
+node_modules
+.DS_STORE
+dist
+dist-*
+
+# SubQuery
+.data
+
+# Docker
+docker-compose.yml
+
+# Environment
+.env
+.env.*
+!.env.example
