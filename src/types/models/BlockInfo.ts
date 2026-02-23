@@ -38,6 +38,7 @@ export class BlockInfo implements CompatEntity {
     public timestamp: Date;
     public transactionCount: number;
     public proposer: string;
+    public totalFees?: string;
     
 
     get _name(): string {

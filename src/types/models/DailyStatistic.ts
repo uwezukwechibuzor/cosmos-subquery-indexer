@@ -46,6 +46,8 @@ export class DailyStatistic implements CompatEntity {
     public totalIBCTransfers: number;
     public totalVolume?: string;
     public avgBlockTime?: number;
+    public totalFees?: string;
+    public totalFeesByDenom?: string;
     
 
     get _name(): string {

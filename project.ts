@@ -54,6 +54,22 @@ const project: CosmosProject = {
           },
 
           // ============================================
+          // Transaction Handler - Track all transactions and fees
+          // ============================================
+          {
+            handler: "handleTransaction",
+            kind: CosmosHandlerKind.Transaction,
+          },
+
+          // ============================================
+          // Daily Stats Aggregation
+          // ============================================
+          {
+            handler: "aggregateDailyStats",
+            kind: CosmosHandlerKind.Block,
+          },
+
+          // ============================================
           // Bank Module - Transfers
           // ============================================
           {

@@ -28,5 +28,7 @@ export {IBCTransfer} from "./IBCTransfer"
 
 export {DailyStatistic} from "./DailyStatistic"
 
+export {Transaction} from "./Transaction"
+
 export {BlockInfo} from "./BlockInfo"
 

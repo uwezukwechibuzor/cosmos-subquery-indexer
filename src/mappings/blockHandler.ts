@@ -4,11 +4,31 @@ import { getTimestamp } from "../utils/helpers";
 
 /**
  * Handler for every block
- * Tracks basic block information and statistics
+ * Tracks basic block information, statistics, and total fees
  */
 export async function handleBlock(block: CosmosBlock): Promise<void> {
   const blockHeight = BigInt(block.block.header.height);
   const timestamp = getTimestamp(block);
+
+  // Calculate total fees for this block
+  let totalFees = BigInt(0);
+
+  // Get all transactions in this block
+  if (block.transactions) {
+    for (const tx of block.transactions) {
+      try {
+        const decodedTx = tx.decodedTx || (tx as any).tx?.decodedTx;
+        if (decodedTx?.authInfo?.fee?.amount) {
+          for (const feeAmount of decodedTx.authInfo.fee.amount) {
+            const amount = BigInt(feeAmount.amount?.toString() || "0");
+            totalFees += amount;
+          }
+        }
+      } catch (error) {
+        // Skip fee calculation for this tx if it fails
+      }
+    }
+  }
 
   // Create block info record
   const proposerAddress = block.block.header.proposerAddress;
@@ -23,12 +43,13 @@ export async function handleBlock(block: CosmosBlock): Promise<void> {
     timestamp,
     transactionCount: block.block.txs?.length || 0,
     proposer,
+    totalFees: totalFees.toString(),
   });
 
   await blockInfo.save();
 
   // Log every 1000 blocks
   if (Number(blockHeight) % 1000 === 0) {
-    logger.info(`Processed block ${blockHeight}`);
+    logger.info(`Processed block ${blockHeight} with ${totalFees.toString()} total fees`);
   }
 }

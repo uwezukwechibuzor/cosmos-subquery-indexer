@@ -217,6 +217,22 @@ type DailyStatistic @entity {
   totalIBCTransfers: Int!
   totalVolume: String
   avgBlockTime: Float
+  totalFees: String
+  totalFeesByDenom: String # JSON string of {denom: amount}
+}
+
+type Transaction @entity {
+  id: ID! # txHash
+  blockHeight: BigInt! @index
+  timestamp: Date! @index
+  txHash: String! @index
+  sender: String! @index
+  success: Boolean!
+  gasWanted: String
+  gasUsed: String
+  fee: String
+  feeDenom: String
+  memo: String
 }
 
 type BlockInfo @entity {
@@ -226,4 +242,5 @@ type BlockInfo @entity {
   timestamp: Date! @index
   transactionCount: Int!
   proposer: String! @index
+  totalFees: String # Total fees in this block
 }

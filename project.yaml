@@ -19,7 +19,6 @@ network:
   endpoint:
     - https://cosmos-rpc.polkachu.com
     - https://rpc.lavenderfive.com/cosmoshub
-    - https://cosmoshub.rpc.stakin-nodes.com
 dataSources:
   - kind: cosmos/Runtime
     startBlock: 29903125
@@ -27,6 +26,10 @@ dataSources:
       file: ./dist/index.js
       handlers:
         - handler: handleBlock
+          kind: cosmos/BlockHandler
+        - handler: handleTransaction
+          kind: cosmos/TransactionHandler
+        - handler: aggregateDailyStats
           kind: cosmos/BlockHandler
         - handler: handleTransferMessage
           kind: cosmos/MessageHandler
