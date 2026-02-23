@@ -7,9 +7,6 @@ dist-*
 # SubQuery
 .data
 
-# Docker
-docker-compose.yml
-
 # Environment
 .env
 .env.*
